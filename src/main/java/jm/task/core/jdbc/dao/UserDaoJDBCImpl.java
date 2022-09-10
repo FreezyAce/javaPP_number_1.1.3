@@ -4,10 +4,7 @@ import com.sun.xml.bind.v2.schemagen.episode.Package;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +15,7 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void createUsersTable() {
         try {
+            Util.connection = DriverManager.getConnection(Util.getURL(), Util.getUserName(), Util.getPASSWORD());
             Util.statement = Util.connection.createStatement();
             Util.statement.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS users " +
@@ -30,6 +28,7 @@ public class UserDaoJDBCImpl implements UserDao {
         } finally {
             try {
                 Util.statement.close();
+                Util.connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }
@@ -38,52 +37,90 @@ public class UserDaoJDBCImpl implements UserDao {
 
     public void dropUsersTable() {
         try {
+            Util.connection = DriverManager.getConnection(Util.getURL(), Util.getUserName(), Util.getPASSWORD());
             Util.statement = Util.connection.createStatement();
             Util.statement.executeUpdate("DROP TABLE IF EXISTS users");
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                Util.statement.close();
+                Util.connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
-
     }
 
     public void saveUser(String name, String lastName, byte age) {
-        try (PreparedStatement pstm = Util.connection.prepareStatement("INSERT INTO users (name, last_name, age) VALUES (?, ?, ?)")) {
-            pstm.setString(1, name);
-            pstm.setString(2, lastName);
-            pstm.setByte(3, age);
-            pstm.executeUpdate();
+        try {
+            Util.connection = DriverManager.getConnection(Util.getURL(), Util.getUserName(), Util.getPASSWORD());
+            try (PreparedStatement pstm = Util.connection.prepareStatement("INSERT INTO users (name, last_name, age) VALUES (?, ?, ?)")) {
+                pstm.setString(1, name);
+                pstm.setString(2, lastName);
+                pstm.setByte(3, age);
+                pstm.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                Util.connection.close();
+            } catch (SQLException e) {
+               e.printStackTrace();
+            }
         }
     }
 
     public void removeUserById(long id) {
-        try (PreparedStatement pstm = Util.connection.prepareStatement("DELETE FROM users WHERE id = ?")) {
-            pstm.setLong(1, id);
-            pstm.executeUpdate();
+        try {
+            Util.connection = DriverManager.getConnection(Util.getURL(), Util.getUserName(), Util.getPASSWORD());
+            try (PreparedStatement pstm = Util.connection.prepareStatement("DELETE FROM users WHERE id = ?")) {
+                pstm.setLong(1, id);
+                pstm.executeUpdate();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         } catch (SQLException e) {
             e.printStackTrace();
+        } finally {
+            try {
+                Util.connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
         }
     }
 
     public List<User> getAllUsers() {
         List<User> users = new ArrayList<>();
-
-        try (ResultSet resultSet = Util.connection.createStatement().executeQuery("SELECT * FROM users")) {
-            while (resultSet.next()) {
-                User user = new User(resultSet.getString("name"),
-                        resultSet.getString("last_name"), resultSet.getByte("age"));
-                user.setId(resultSet.getLong("id"));
-                users.add(user);
+        try {
+            Util.connection = DriverManager.getConnection(Util.getURL(), Util.getUserName(), Util.getPASSWORD());
+            try (ResultSet resultSet = Util.connection.createStatement().executeQuery("SELECT * FROM users")) {
+                while (resultSet.next()) {
+                    User user = new User(resultSet.getString("name"),
+                            resultSet.getString("last_name"), resultSet.getByte("age"));
+                    user.setId(resultSet.getLong("id"));
+                    users.add(user);
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
             }
         } catch (SQLException e) {
-            e.printStackTrace();
+            try {
+                Util.connection.close();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         }
         return users;
     }
 
     public void cleanUsersTable() {
         try {
+            Util.connection = DriverManager.getConnection(Util.getURL(), Util.getUserName(), Util.getPASSWORD());
             Util.statement = Util.connection.createStatement();
             Util.statement.executeUpdate("TRUNCATE TABLE users");
 
@@ -92,6 +129,7 @@ public class UserDaoJDBCImpl implements UserDao {
         } finally {
             try {
                 Util.statement.close();
+                Util.connection.close();
             } catch (SQLException e) {
                 e.printStackTrace();
             }

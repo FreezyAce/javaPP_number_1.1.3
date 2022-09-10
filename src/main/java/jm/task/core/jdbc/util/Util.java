@@ -10,12 +10,14 @@ public class Util {
     public static Statement statement;
     public static Connection connection;
 
-    static {
-        try {
-            connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD);
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+    public static String getUserName() {
+        return USER_NAME;
+    }
+    public static String getPASSWORD() {
+        return PASSWORD;
+    }
+    public static String getURL() {
+        return URL;
     }
 
 
