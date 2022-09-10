@@ -22,15 +22,7 @@ public class Main {
 
         userService.dropUsersTable(); // очистка таблицы если есть.
         userService.createUsersTable(); // создание таблицы
-        try {
-            Util.connection.isValid(1);//соединениесБД
-            System.out.println("Соединение с СУБД выполнено." );
-        } catch (SQLException e) {
-            e.printStackTrace(); // обработка ошибок  DriverManager.getConnection
-            System.out.println("Ошибка SQL !");
-        }
-
-        userService.cleanUsersTable();
+        userService.cleanUsersTable(); // очистка всех юзеров в таблице
         System.out.println("Table created");
 
         userService.saveUser(userTest[0][0], userTest[0][1], (byte) Integer.parseInt(userTest[0][2]));
@@ -44,13 +36,5 @@ public class Main {
         System.out.println(users.get(1).getName() + " " + users.get(1).getLastName() + " " + users.get(1).getAge());
         System.out.println(users.get(2).getName() + " " + users.get(2).getLastName() + " " + users.get(2).getAge());
         System.out.println(users.get(3).getName() + " " + users.get(3).getLastName() + " " + users.get(3).getAge());
-
-        try {
-            Util.connection.close();       // отключение от БД
-            System.out.println("Отключение от СУБД выполнено.");
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
-
     }
 }

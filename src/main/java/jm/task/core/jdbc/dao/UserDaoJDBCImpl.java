@@ -10,7 +10,6 @@ import java.util.List;
 
 public class UserDaoJDBCImpl implements UserDao {
     public UserDaoJDBCImpl() {
-
     }
 
     public void createUsersTable() {
@@ -98,6 +97,7 @@ public class UserDaoJDBCImpl implements UserDao {
         List<User> users = new ArrayList<>();
         try {
             Util.connection = DriverManager.getConnection(Util.getURL(), Util.getUserName(), Util.getPASSWORD());
+
             try (ResultSet resultSet = Util.connection.createStatement().executeQuery("SELECT * FROM users")) {
                 while (resultSet.next()) {
                     User user = new User(resultSet.getString("name"),
