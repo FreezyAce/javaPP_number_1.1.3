@@ -1,6 +1,5 @@
 package jm.task.core.jdbc.dao;
 
-import com.sun.xml.bind.v2.schemagen.episode.Package;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 
@@ -13,9 +12,8 @@ public class UserDaoJDBCImpl implements UserDao {
     }
 
     public void createUsersTable() {
-        try {
-            Util.statement = Util.getConnection().createStatement();
-            Util.statement.executeUpdate(
+        try (Statement statement = Util.getConnection().createStatement()) {
+            statement.executeUpdate(
                     "CREATE TABLE IF NOT EXISTS users " +
                     "(id BIGINT PRIMARY KEY AUTO_INCREMENT," +
                     " name VARCHAR(255)," +
@@ -23,29 +21,14 @@ public class UserDaoJDBCImpl implements UserDao {
                     "age INT)");
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                Util.statement.close();
-                Util.connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
     public void dropUsersTable() {
-        try {
-            Util.statement = Util.getConnection().createStatement();
-            Util.statement.executeUpdate("DROP TABLE IF EXISTS users");
+        try (Statement statement = Util.getConnection().createStatement()){
+            statement.executeUpdate("DROP TABLE IF EXISTS users");
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                Util.statement.close();
-                Util.connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -57,12 +40,6 @@ public class UserDaoJDBCImpl implements UserDao {
             pstm.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                Util.connection.close();
-            } catch (SQLException e) {
-               e.printStackTrace();
-            }
         }
     }
 
@@ -72,12 +49,6 @@ public class UserDaoJDBCImpl implements UserDao {
             pstm.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                Util.connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 
@@ -91,29 +62,16 @@ public class UserDaoJDBCImpl implements UserDao {
                 users.add(user);
             }
         } catch (SQLException e) {
-            try {
-                Util.connection.close();
-            } catch (SQLException ex) {
-                throw new RuntimeException(ex);
-            }
+            e.printStackTrace();
         }
         return users;
     }
 
     public void cleanUsersTable() {
-        try {
-            Util.statement = Util.getConnection().createStatement();
-            Util.statement.executeUpdate("TRUNCATE TABLE users");
-
+        try (Statement statement = Util.getConnection().createStatement()){
+            statement.executeUpdate("TRUNCATE TABLE users");
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                Util.statement.close();
-                Util.connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
         }
     }
 }

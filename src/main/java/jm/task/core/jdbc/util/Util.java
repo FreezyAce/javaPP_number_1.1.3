@@ -6,8 +6,6 @@ public class Util {
     private static final String USER_NAME = "root";
     private static final String PASSWORD = "ROOT";
     private static final String URL = "jdbc:mysql://localhost:3306/mysql";
-
-    public static Statement statement;
     public static Connection connection;
 
     public static Connection getConnection() {
@@ -18,17 +16,4 @@ public class Util {
         }
         return connection;
     }
-
-
-    public static String getUserName() {
-        return USER_NAME;
-    }
-    public static String getPASSWORD() {
-        return PASSWORD;
-    }
-    public static String getURL() {
-        return URL;
-    }
-
-
 }
