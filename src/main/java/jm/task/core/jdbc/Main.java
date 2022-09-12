@@ -32,9 +32,6 @@ public class Main {
 
         List<User> users = userService.getAllUsers();
 
-        System.out.println(users.get(0).getName() + " " + users.get(0).getLastName() + " " + users.get(0).getAge());
-        System.out.println(users.get(1).getName() + " " + users.get(1).getLastName() + " " + users.get(1).getAge());
-        System.out.println(users.get(2).getName() + " " + users.get(2).getLastName() + " " + users.get(2).getAge());
-        System.out.println(users.get(3).getName() + " " + users.get(3).getLastName() + " " + users.get(3).getAge());
+        System.out.println(users.toString());
     }
 }
