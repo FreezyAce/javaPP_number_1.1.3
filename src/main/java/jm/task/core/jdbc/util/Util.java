@@ -6,14 +6,13 @@ public class Util {
     private static final String USER_NAME = "root";
     private static final String PASSWORD = "ROOT";
     private static final String URL = "jdbc:mysql://localhost:3306/mysql";
-    public static Connection connection;
 
-    public static Connection getConnection() {
+    public Connection getConnection() {
         try {
-            connection = DriverManager.getConnection(URL, USER_NAME, PASSWORD);
+            return DriverManager.getConnection(URL, USER_NAME, PASSWORD);
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return connection;
+        return null;
     }
 }
